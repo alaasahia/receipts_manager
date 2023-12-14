@@ -1,0 +1,32 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h2 class="text-center">Receipt Details</h2>
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item"><strong>Store Name:</strong> {{ receipt.store_name }}</li>
+              <li class="list-group-item"><strong>User:</strong> {{ receipt.user.username }}</li>
+              <li class="list-group-item"><strong>Items:</strong> {{ receipt.items }}</li>
+              <li class="list-group-item"><strong>Purchase Date:</strong> {{ receipt.purchase_date }}</li>
+              <li class="list-group-item"><strong>Total Amount:</strong> ${{ receipt.total_ammount }}</li>
+            </ul>
+            <div class="mt-3">
+              <a href="{% url 'update_receipt' receipt_id=receipt.id %}" class="btn btn-warning">Edit Receipt</a>
+              <form method="post" action="{% url 'delete_receipt' receipt.id %}" onsubmit="return confirm('Are you sure you want to delete this receipt?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete Receipt</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

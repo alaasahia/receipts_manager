@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form method="get" action="" class="row g-3 align-items-center">
+          <div class="col-md-2">
+            <label for="start_date" class="form-label">Start Date:</label>
+            <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
+          </div>
+
+          <div class="col-md-2">
+            <label for="end_date" class="form-label">End Date:</label>
+                      <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
+          </div>
+
+          <div class="col-md-6">
+            <label for="store_names" class="form-label">Search for Stores:</label>
+            <input type="text" name="store_name" id="storeNamesInput" class="form-control typeahead" data-url="{% url 'store_names' %}" placeholder="Type to search">
+          </div>
+
+          <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+          <div class="container mt-3">
+            <div class="row">
+              <div class="col-md-8">
+                <a href="{% url 'create_receipt' %}" class="btn btn-success">Create New Receipt</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <p class="mb-0">Total Amount: {{ total_ammount }}$</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipts List -->
+
+<div class="container mt-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <ul class="list-group">
+                {% if receipts %}
+                    {% for receipt in receipts %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{% url 'receipt_details' receipt_id=receipt.id %}">
+                                    <strong>{{ receipt.store_name }}</strong> - {{ receipt.purchase_date }} - {{ receipt.total_ammount }}$
+                                </a>
+                                <br>
+                                <span class="badge bg-secondary">Items: {{ receipt.items }}</span>
+                            </div>
+                            <div>
+                                <!-- Button to delete -->
+                                <a href="{% url 'delete_receipt' receipt_id=receipt.id %}" class="btn btn-outline-danger btn-sm me-1" role="button">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+
+                                <!-- Button to edit -->
+                                <a href="{% url 'update_receipt' receipt_id=receipt.id %}" class="btn btn-outline-primary btn-sm" role="button">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+            {% else %}
+                  <h5 class='align-items-center'>you don't have any receipts</h5>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+  <!-- Pagination -->
+  <div class="container mt-3">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% if receipts.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                  <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ receipts.previous_page_number }}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% endif %}
+            {% for i in receipts.paginator.page_range %}
+              <li class="page-item{% if receipts.number == i %} active{% endif %}">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+              </li>
+            {% endfor %}
+            {% if receipts.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ receipts.next_page_number }}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ receipts.paginator.num_pages }}" aria-label="Last">
+                  <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include Bootstrap Typeahead JS -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- Include Bootstrap Typeahead JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+  <script>
+    // Initialize Typeahead on the storeNamesInput field
+    $(document).ready(function(){
+      var storeNames = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: {
+            url: document.getElementById('storeNamesInput').getAttribute('data-url'),
+            cache: false
+        }
+      });
+
+      $('#storeNamesInput').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'storeNames',
+        source: storeNames
+      });
+    });
+  </script>
+{% endblock %}
