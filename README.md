@@ -19,9 +19,9 @@ then you can activate the virtual environment:
 ```sh
 $ .\env\Scripts\activate
 ```
-- on macOS/Linux:
+- on Linux:
 ```sh
-$ .\env\Scripts\activate
+$ ./env/bin/activate
 ```
 now install the dependencies
 ```sh
