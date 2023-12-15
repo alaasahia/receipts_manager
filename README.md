@@ -9,9 +9,21 @@ A straightforward and simple Receipt Manager for effortless tracking and organiz
 $ git clone https://github.com/gocardless/sample-django-app.git
 $ cd receipt_manager
 ```
-
 2. Install dependencies
-
+first ensure that you have a vertual environment set uo before installing
+```sh
+$python -m venv env
+```
+then you can activate the vertual environment:
+- on windows:
+```sh
+$ .\env\Scripts\activate
+```
+- on macOS/Linux:
+```sh
+$ .\env\Scripts\activate
+```
+now install the dependencies
 ```sh
 (env)$ pip install -r requirements.txt
 ```
