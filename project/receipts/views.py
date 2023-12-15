@@ -40,7 +40,7 @@ class ReceiptListView(LoginRequiredMixin, ListView):
         start_date = request_data.get('min_date', datetime.min.date()) #if not specified provide the minimum date
         end_date = request_data.get('max_date', datetime.now().date()) #if not specified provide the present date
         filters.add(Q(purchase_date__range=(start_date, end_date)), Q.AND)
-        receipts = Receipt.objects.filter()
+        receipts = Receipt.objects.filter(filters).order_by('-purchase_date')
         return receipts
 
     def get_context_data(self, **kwargs):
