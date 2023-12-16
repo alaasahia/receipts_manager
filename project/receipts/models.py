@@ -16,15 +16,15 @@ class Receipt(models.Model):
 
         indexes = [
             models.Index(
-                fields=['store_name','purchase_date'],
+                fields=['user','store_name','purchase_date'],
                 name='store_name_index'
             ),
             models.Index(
-                fields=['purchase_date'],
+                fields=['user', 'purchase_date'],
                 name='purchase_date_index'
             ),
             models.Index(
-                fields=['total_ammount'],
+                fields=['user', 'total_ammount'],
                 name='total_ammount_index'
             )
         ]
