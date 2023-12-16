@@ -12,7 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse
-
+from django.utils import timezone
 @require_GET
 @login_required
 #get the names of all the stores from the available user receipts
@@ -37,10 +37,11 @@ class ReceiptListView(LoginRequiredMixin, ListView):
         if store_name:
             filters.add(Q(store_name=store_name), Q.AND)
         #to find specific receipts that fall within this range(start_date, end_date)
-        start_date = request_data.get('min_date', datetime.min.date()) #if not specified provide the minimum date
-        end_date = request_data.get('max_date', datetime.now().date()) #if not specified provide the present date
+        start_date = timezone.make_aware(datetime.combine(request_data.get('min_date', datetime.min.date()), datetime.min.time()))
+        end_date = timezone.make_aware(datetime.combine(request_data.get('max_date', datetime.now().date()), datetime.max.time()))
         filters.add(Q(purchase_date__range=(start_date, end_date)), Q.AND)
         receipts = Receipt.objects.filter(filters).order_by('-purchase_date')
+
         return receipts
 
     def get_context_data(self, **kwargs):
